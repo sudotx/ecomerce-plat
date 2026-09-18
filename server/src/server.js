@@ -1,12 +1,13 @@
 import "dotenv/config";
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
+import { validateEnv } from "./config/env.js";
 
-// Port 5001 (not 5000): macOS AirPlay Receiver occupies 5000.
 const PORT = process.env.PORT || 5001;
 
 async function startServer() {
   try {
+    validateEnv();
     await connectDB();
     app.listen(PORT, () => {
       console.log(`API listening on http://localhost:${PORT}`);
