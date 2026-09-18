@@ -1,14 +1,25 @@
+import { Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import HomePage from './pages/HomePage.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
 
 function App() {
   return (
-    <main className="app">
-      <h1>Ecommerce Platform</h1>
-      <p>
-        Frontend shell ready. API runs at{' '}
-        <code>{import.meta.env.VITE_API_URL || 'http://localhost:5001/api'}</code>.
-      </p>
-    </main>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   )
 }
 
