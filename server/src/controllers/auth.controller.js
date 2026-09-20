@@ -3,10 +3,12 @@ import {
   login,
   logout,
   getAuthCookieOptions,
+  updateProfile,
 } from "../services/auth.service.js";
 import {
   validateRegister,
   validateLogin,
+  validateUpdateProfile,
 } from "../validators/auth.validator.js";
 
 function setAuthCookie(res, token) {
@@ -58,4 +60,17 @@ export async function logoutHandler(req, res, next) {
 
 export async function meHandler(req, res) {
   res.status(200).json({ user: req.user });
+}
+
+export async function updateProfileHandler(req, res, next) {
+  try {
+    const errors = validateUpdateProfile(req.body || {});
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+    const user = await updateProfile(req.user.id, req.body);
+    res.status(200).json({ user });
+  } catch (err) {
+    next(err);
+  }
 }

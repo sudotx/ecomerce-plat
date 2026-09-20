@@ -105,3 +105,19 @@ export async function getCurrentUser(userId) {
 export function logout() {
   return { ok: true };
 }
+
+export async function updateProfile(userId, { name = "", email = "" } = {}) {
+  const user = await User.findById(userId);
+  if (!user) throw authError("Not authenticated", 401);
+
+  if (name.trim().length > 0) user.name = name.trim();
+  if (email.trim().length > 0) {
+    const normalizedEmail = normalizeEmail(email);
+    const existing = await User.findOne({ email: normalizedEmail, _id: { $ne: userId } });
+    if (existing) throw authError("An account with this email already exists", 409);
+    user.email = normalizedEmail;
+  }
+
+  await user.save();
+  return sanitizeUser(user);
+}

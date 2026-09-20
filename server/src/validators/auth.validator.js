@@ -31,3 +31,17 @@ export function validateLogin({ email = "", password = "" } = {}) {
 
   return errors;
 }
+
+export function validateUpdateProfile({ name = "", email = "" } = {}) {
+  const errors = [];
+
+  if (typeof name !== "string" || name.trim().length < 2) {
+    errors.push({ field: "name", message: "Name must be at least 2 characters" });
+  }
+
+  if (typeof email !== "string" || !EMAIL_RE.test(email.trim())) {
+    errors.push({ field: "email", message: "A valid email is required" });
+  }
+
+  return errors;
+}
