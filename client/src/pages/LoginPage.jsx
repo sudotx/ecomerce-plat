@@ -18,7 +18,7 @@ export default function LoginPage() {
     setPending(true);
     try {
       await login(email, password);
-      navigate("/");
+      navigate("/profile");
     } catch (err) {
       if (err.errors) {
         const byField = {};

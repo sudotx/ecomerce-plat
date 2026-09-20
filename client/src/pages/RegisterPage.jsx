@@ -19,7 +19,7 @@ export default function RegisterPage() {
     setPending(true);
     try {
       await register(name, email, password);
-      navigate("/");
+      navigate("/profile");
     } catch (err) {
       if (err.errors) {
         const byField = {};

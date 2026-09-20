@@ -35,14 +35,20 @@ export function AuthProvider({ children }) {
     return user;
   }, []);
 
+  const updateProfile = useCallback(async (name, email) => {
+    const { user } = await authApi.updateProfile({ name, email });
+    setUser(user);
+    return user;
+  }, []);
+
   const logout = useCallback(async () => {
-    // Even if the cleart fails locally, drop the session state.
+    // Even if the call fails locally, drop the session state.
     await authApi.logout().catch(() => {});
     setUser(null);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   );
