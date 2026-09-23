@@ -54,8 +54,9 @@ circle when none is set.
 - `fileFilter`: accept only `image/jpeg`, `image/png`, `image/webp`.
   Reject others with `multer.MulterError`-style 400 error (message:
   "Only JPG, PNG, or WebP images are allowed").
-- Exported as route-level middleware on the new endpoint. Memory storage
-  means no temp files on disk.
+- Exported as route-level middleware on the new endpoint: `single("avatar")`
+  (field name locked to `avatar` on both sides). Memory storage means no
+  temp files on disk.
 
 ### Route — `server/src/routes/auth.routes.js` (edit)
 
@@ -68,13 +69,11 @@ circle when none is set.
 
 - Initializes the Cloudinary SDK from `CLOUDINARY_CLOUD_NAME`,
   `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`.
-- `uploadAvatar(buffer, mimeType)` → `cloudinary.uploader.upload` using
-  `data-uri` / buffer input? No — Cloudinary's JS SDK accepts a
-  `data-uri` string or a public URL; for a buffer the cleanest path is
-  `uploader.upload_stream` or passing the data URI built from the buffer.
-  Implementation detail: build `data:<mimeType>;base64,<buffer>` and pass
-  to `uploader.upload` with `{ folder: "avatars", resource_type: "image",
-  overwrite: false }`. Returns `{ url, publicId }`.
+- `uploadAvatar(buffer, mimeType)` → builds `data:<mimeType>;base64,<buffer>`
+  from the multer buffer and passes it to `cloudinary.uploader.upload` with
+  `{ folder: "avatars", resource_type: "image", overwrite: false }`
+  (data URI is the supported input form; no local file needed).
+  Returns `{ url, publicId }`.
 - `deleteAvatar(publicId)` → `cloudinary.uploader.destroy(publicId)`.
   Swallow "not found" (already gone) errors; propagate other failures.
 
