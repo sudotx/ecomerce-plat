@@ -1,7 +1,5 @@
 # Ecommerce Platform
 
-A full-stack e-commerce web application built incrementally, phase by phase:
-
 - **Client**: React (JavaScript) + Vite + React Router
 - **Server**: Node.js + Express (JavaScript, REST API)
 - **Database**: MongoDB with Mongoose
