@@ -1,7 +1,14 @@
-import "dotenv/config";
+import { config as loadEnv } from "dotenv";
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
 import { validateEnv } from "./config/env.js";
+
+// dotenv never overrides an env var that is already exported, so a stray
+// PORT=3001 in the shell silently shadowed the configured 5001 and the API
+// was unreachable (the server logged "listening" on 3001 but that port was
+// taken). This project treats server/.env as the source of truth: load it
+// with override so the configured values always win.
+loadEnv({ override: true });
 
 const PORT = process.env.PORT || 5001;
 

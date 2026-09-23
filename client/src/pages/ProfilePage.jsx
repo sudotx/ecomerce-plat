@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
 function getInitials(name) {
@@ -63,6 +63,7 @@ export default function ProfilePage() {
           <div className="profile-header-info">
             <h1 className="profile-name">{user.name}</h1>
             <span className="profile-role">{formatRole(user.role)}</span>
+            <span className="profile-points">⭐ {user.points} points</span>
           </div>
         </div>
 

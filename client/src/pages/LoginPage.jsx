@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, notify } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,10 @@ export default function LoginPage() {
     setBanner("");
     setPending(true);
     try {
-      await login(email, password);
+      const { pointsEarned } = await login(email, password);
+      if (pointsEarned) {
+        notify(`You earned ${pointsEarned} points! They'll be added to your balance.`);
+      }
       navigate("/profile");
     } catch (err) {
       if (err.errors) {

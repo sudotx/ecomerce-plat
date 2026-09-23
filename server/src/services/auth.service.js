@@ -4,6 +4,9 @@ import User from "../models/user.model.js";
 
 const BCRYPT_COST = 10;
 
+/** Points awarded to the user's balance on every successful login. */
+const LOGIN_POINTS = 5;
+
 function signToken(user) {
   return jwt.sign(
     { sub: user._id.toString(), role: user.role },
@@ -42,6 +45,7 @@ function sanitizeUser(user) {
     name: user.name,
     email: user.email,
     role: user.role,
+    points: user.points ?? 0,
   };
 }
 
@@ -90,7 +94,21 @@ export async function login({ email = "", password = "" }) {
   if (!valid) {
     throw authError("Invalid email or password", 401);
   }
-  return { user: sanitizeUser(user), token: signToken(user) };
+
+  // Login bonus: atomically add points so the profile shows the new
+  // balance immediately. $inc also covers users created before the
+  // points field existed (treats a missing field as 0).
+  const updated = await User.findByIdAndUpdate(
+    user._id,
+    { $inc: { points: LOGIN_POINTS } },
+    { new: true }
+  );
+
+  return {
+    user: sanitizeUser(updated),
+    token: signToken(user),
+    pointsEarned: LOGIN_POINTS,
+  };
 }
 
 export async function getCurrentUser(userId) {

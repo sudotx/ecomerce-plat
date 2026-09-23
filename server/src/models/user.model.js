@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema(
       enum: ["customer", "admin"],
       default: "customer",
     },
+    points: {
+      type: Number,
+      default: 0,
+      min: [0, "Points cannot be negative"],
+    },
   },
   { timestamps: true }
 );
